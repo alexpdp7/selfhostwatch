@@ -1,11 +1,23 @@
+import os
 import pathlib
+
+import dj_database_url
+
+DEVELOPMENT = bool(os.environ.get("DEV"))
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure'
-DEBUG = True
+if DEVELOPMENT:
+    # In debug mode, we just generate a random key when we run runserver.
+    # This means sessions will expire when we restart, but this simplifies things a bit.
+    from django.core.management.utils import get_random_secret_key
+    SECRET_KEY = get_random_secret_key()
+    ALLOWED_HOSTS = []
+else:
+    SECRET_KEY = os.environ["SECRET_KEY"]
+    ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
-ALLOWED_HOSTS = []
+DEBUG = DEVELOPMENT
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,11 +61,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'shw.dj.wsgi.application'
 
+if DEVELOPMENT:
+    sqlite = BASE_DIR / "shw.db"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{sqlite}" if not os.environ.get("DATABASE_URL") and DEVELOPMENT else None,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [

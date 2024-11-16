@@ -1,0 +1,197 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: shw
+  name: shw
+spec:
+  selector:
+    matchLabels:
+      app: shw
+  template:
+    metadata:
+      labels:
+        app: shw
+    spec:
+      containers:
+      - image: ghcr.io/astral-sh/uv:debian
+        command:
+          - uv
+          - run
+          - --with
+          - git+https://github.com/alexpdp7/selfhostwatch.git[pg]
+          - django-admin
+          - runserver
+          - --settings
+          - shw.dj.settings
+        imagePullPolicy: Always
+        name: shw-runserver
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secret_key
+                name: shw
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: database_url
+                name: shw
+          - name: ALLOWED_HOSTS
+            valueFrom:
+              configMapKeyRef:
+                key: allowed_hosts
+                name: shw
+      initContainers:
+      - image: ghcr.io/astral-sh/uv:debian
+        command:
+          - uv
+          - run
+          - --with
+          - git+https://github.com/alexpdp7/selfhostwatch.git[pg]
+          - django-admin
+          - migrate
+          - --settings
+          - shw.dj.settings
+        imagePullPolicy: Always
+        name: shw-migrate
+        env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secret_key
+                name: shw
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: database_url
+                name: shw
+          - name: ALLOWED_HOSTS
+            valueFrom:
+              configMapKeyRef:
+                key: allowed_hosts
+                name: shw
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: yunohost
+spec:
+  jobTemplate:
+    metadata:
+      name: yunohost
+    spec:
+      template:
+        spec:
+          containers:
+          - image: ghcr.io/astral-sh/uv:debian
+            command:
+              - uv
+              - run
+              - --with
+              - git+https://github.com/alexpdp7/selfhostwatch.git[pg]
+              - django-admin
+              - shell
+              - --settings
+              - shw.dj.settings
+              - -c
+              - "from shw.dj.yuno import loader; loader.load()"
+            imagePullPolicy: Always
+            name: yunohost
+            env:
+              - name: SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: secret_key
+                    name: shw
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    key: database_url
+                    name: shw
+              - name: ALLOWED_HOSTS
+                valueFrom:
+                  configMapKeyRef:
+                    key: allowed_hosts
+                    name: shw
+          restartPolicy: OnFailure
+  schedule: "13 2 * * *"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gitapp
+spec:
+  jobTemplate:
+    metadata:
+      name: gitapp
+    spec:
+      template:
+        spec:
+          containers:
+          - image: ghcr.io/astral-sh/uv:debian
+            command:
+              - uv
+              - run
+              - --with
+              - git+https://github.com/alexpdp7/selfhostwatch.git[pg]
+              - django-admin
+              - shell
+              - --settings
+              - shw.dj.settings
+              - -c
+              - "from shw.dj.git import loader; loader.load()"
+            imagePullPolicy: Always
+            name: gitapp
+            env:
+              - name: SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: secret_key
+                    name: shw
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    key: database_url
+                    name: shw
+              - name: ALLOWED_HOSTS
+                valueFrom:
+                  configMapKeyRef:
+                    key: allowed_hosts
+                    name: shw
+          restartPolicy: OnFailure
+  schedule: "35 2 * * *"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: shw
+  name: shw
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+  selector:
+    app: shw
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shw
+spec:
+  rules:
+  - host: invalid.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: shw
+            port:
+              number: 8000
+        path: /
+        pathType: Prefix
