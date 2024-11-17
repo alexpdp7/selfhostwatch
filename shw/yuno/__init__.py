@@ -1,7 +1,15 @@
 from collections import abc
 import dataclasses
+import logging
+import subprocess
+import tomllib
 
 import httpx
+
+from shw import git
+
+
+logger = logging.getLogger(__name__)
 
 
 def load():
@@ -42,5 +50,43 @@ def app_from_json(j):
     )
 
 
+def app_from_manifest(s):
+    manifest = tomllib.loads(s)
+    return App(
+        id=manifest["id"],
+        architectures=manifest["integration"]["architectures"],
+        version=manifest["version"],
+        yuno_ldap=str(manifest["integration"]["ldap"]).lower(),
+        yuno_multi_instance=manifest["integration"]["multi_instance"],
+        yuno_sso=str(manifest["integration"]["sso"]).lower(),
+        yuno_high_quality=None,
+        yuno_maintained=None,
+        yuno_state=None,
+    )
+
+
 def parse(apps_json) -> abc.Iterator[App]:
     return [app_from_json(j) for j in apps_json["apps"].values()]
+
+
+def backfill(app):
+    versions = []
+    last_app = None
+    with git.clone_repo(f"https://github.com/YunoHost-Apps/{app}_ynh.git") as repo:
+        while True:
+            manifest_text = (repo / "manifest.toml").read_text()
+            try:
+                app = app_from_manifest(manifest_text)
+                date = git.get_last_commit_date(repo)
+                if not last_app or last_app != app:
+                    yield app, date
+                    last_app = app
+            except tomllib.TOMLDecodeError as e:
+                logger.error("malformed manifest")
+
+            log = subprocess.run(["git", "log", "--format=%H", "HEAD^", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
+            previous_commit = log.stdout.strip()
+            if not previous_commit:
+                return
+            previous_commit = previous_commit.splitlines()[0]
+            subprocess.run(["git", "checkout", previous_commit], check=True, cwd=repo)
