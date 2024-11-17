@@ -1,0 +1,13 @@
+<html>
+  <body>
+    <table>
+      {% for update in object_list %}
+      <tr>
+        <td>{{ update.source }}</td>
+        <td>{{ update.version }}</td>
+        <td>{{ update.date }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
