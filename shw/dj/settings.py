@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'shw.dj.yuno',
     'shw.dj.git',
+    'shw.dj.updates',
 ]
 
 MIDDLEWARE = [
