@@ -54,3 +54,21 @@ def load():
         for architecture in app.architectures:
             architecture_instance, _created = models.Architecture.objects.get_or_create(name=architecture)
             app_version.architectures.add(architecture_instance)
+
+
+def backfill(app):
+    models.AppVersion.objects.filter(name=app).delete()
+    for app, date in yuno.backfill(app):
+        app_version = models.AppVersion(
+            name=app.id,
+            version=app.version,
+            yuno_ldap=app.yuno_ldap,
+            yuno_multi_instance=app.yuno_multi_instance,
+            yuno_sso=app.yuno_sso,
+            yuno_high_quality=app.yuno_high_quality,
+            yuno_maintained=app.yuno_maintained,
+            yuno_state=app.yuno_state or "unknown",
+            updated=date,
+        )
+
+        app_version.save()

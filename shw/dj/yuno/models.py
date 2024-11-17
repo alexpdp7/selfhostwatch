@@ -21,8 +21,8 @@ class AppVersion(models.Model):
     yuno_ldap = models.CharField(max_length=20, choices=SSO_CHOICES)
     yuno_multi_instance = models.BooleanField()
     yuno_sso = models.CharField(max_length=20, choices=SSO_CHOICES)
-    yuno_high_quality =  models.BooleanField()
-    yuno_maintained =  models.BooleanField()
+    yuno_high_quality =  models.BooleanField(blank=True, null=True)
+    yuno_maintained =  models.BooleanField(blank=True, null=True)
     yuno_state = models.CharField(max_length=100)
     updated = models.DateTimeField()
 
