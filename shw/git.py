@@ -1,3 +1,4 @@
+import contextlib
 import datetime
 import pathlib
 import subprocess
@@ -18,11 +19,9 @@ def get_tags_to_commits(remote_url):
 
 def get_commits_to_dates(remote_url, commits):
     result = {}
-    with tempfile.TemporaryDirectory() as tempdir:
-        tempdir = pathlib.Path(tempdir)
-        subprocess.run(["git", "clone", "--filter=blob:none", remote_url, "."], check=True, cwd=tempdir)
+    with clone_repo(remote_url, filter_blobs=True) as clone:
         for commit in commits:
-            log = subprocess.run(["git", "log", "-1", "--format=format:%ci", commit], check=True, cwd=tempdir, stdout=subprocess.PIPE, encoding="utf8")
+            log = subprocess.run(["git", "log", "-1", "--format=format:%ci", commit], check=True, cwd=clone, stdout=subprocess.PIPE, encoding="utf8")
             result[commit] = datetime.datetime.fromisoformat(log.stdout)
     return result
 
@@ -34,3 +33,12 @@ def get_remote_tags_to_dates(remote_url):
     for tags, commit in tags_to_commits.items():
         result[tags] = commits_to_dates[commit]
     return result
+
+
+@contextlib.contextmanager
+def clone_repo(remote_url, filter_blobs=True):
+    with tempfile.TemporaryDirectory() as tempdir:
+        tempdir = pathlib.Path(tempdir)
+        filter_blobs = ["--filter=blob:none"] if filter_blobs else []
+        subprocess.run(["git", "clone", "--filter=blob:none", remote_url, tempdir], check=True)
+        yield tempdir
