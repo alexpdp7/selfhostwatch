@@ -21,8 +21,7 @@ def get_commits_to_dates(remote_url, commits):
     result = {}
     with clone_repo(remote_url, filter_blobs=True) as clone:
         for commit in commits:
-            log = subprocess.run(["git", "log", "-1", "--format=format:%ci", commit], check=True, cwd=clone, stdout=subprocess.PIPE, encoding="utf8")
-            result[commit] = datetime.datetime.fromisoformat(log.stdout)
+            result[commit] = get_last_commit_date(clone, commit)
     return result
 
 
@@ -42,3 +41,9 @@ def clone_repo(remote_url, filter_blobs=True):
         filter_blobs = ["--filter=blob:none"] if filter_blobs else []
         subprocess.run(["git", "clone", "--filter=blob:none", remote_url, tempdir], check=True)
         yield tempdir
+
+
+def get_last_commit_date(clone, commit=None):
+    commit = [commit] if commit else []
+    log = subprocess.run(["git", "log", "-1", "--format=format:%ci"] + commit, check=True, cwd=clone, stdout=subprocess.PIPE, encoding="utf8")
+    return datetime.datetime.fromisoformat(log.stdout)
