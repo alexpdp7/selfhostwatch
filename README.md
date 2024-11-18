@@ -1,7 +1,7 @@
 Django `manage.py`:
 
 ```
-uv run python -m shw.dj.manage ...
+DEV=y uv run python -m shw.dj.manage ...
 ```
 
 ## Create a new app
