@@ -28,6 +28,7 @@ def load():
                 yuno_high_quality=previous.yuno_high_quality,
                 yuno_maintained=previous.yuno_maintained,
                 yuno_state=previous.yuno_state,
+                repo=previous.repo,
             )
 
             logger.debug("comparing app {app} to previous {previous_app}")
@@ -45,6 +46,7 @@ def load():
             yuno_high_quality=app.yuno_high_quality,
             yuno_maintained=app.yuno_maintained,
             yuno_state=app.yuno_state,
+            repo=app.repo,
             updated=timezone.now(),
         )
 
@@ -68,6 +70,7 @@ def backfill(app):
             yuno_high_quality=app.yuno_high_quality,
             yuno_maintained=app.yuno_maintained,
             yuno_state=app.yuno_state or "unknown",
+            repo=app.repo,
             updated=date,
         )
 

@@ -27,6 +27,7 @@ class App:
     yuno_high_quality: bool
     yuno_maintained: bool
     yuno_state: str
+    repo: str
 
 
 def app_from_json(j):
@@ -47,6 +48,7 @@ def app_from_json(j):
         yuno_high_quality=j["high_quality"],
         yuno_maintained=j["maintained"],
         yuno_state=j["state"],
+        repo=j["manifest"]["upstream"].get("code"),
     )
 
 
@@ -62,6 +64,7 @@ def app_from_manifest(s):
         yuno_high_quality=None,
         yuno_maintained=None,
         yuno_state=None,
+        repo=manifest["upstream"].get("code"),
     )
 
 

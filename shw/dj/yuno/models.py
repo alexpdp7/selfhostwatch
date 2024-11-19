@@ -24,6 +24,7 @@ class AppVersion(models.Model):
     yuno_high_quality =  models.BooleanField(blank=True, null=True)
     yuno_maintained =  models.BooleanField(blank=True, null=True)
     yuno_state = models.CharField(max_length=100)
+    repo = models.CharField(max_length=100, blank=True, null=True)
     updated = models.DateTimeField()
 
     def __str__(self):
