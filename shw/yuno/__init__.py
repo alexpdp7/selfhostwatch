@@ -87,6 +87,10 @@ def backfill(app):
             except tomllib.TOMLDecodeError as e:
                 logger.error("malformed manifest")
 
+            logs = subprocess.run(["git", "log", "--format=%H", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
+            if len(logs.stdout.strip().splitlines()) == 1:
+                return
+
             log = subprocess.run(["git", "log", "--format=%H", "HEAD^", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
             previous_commit = log.stdout.strip()
             if not previous_commit:
