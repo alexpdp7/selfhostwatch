@@ -91,6 +91,9 @@ def parse(apps_json) -> abc.Iterator[App]:
 
 
 def backfill(app):
+    assert app not in (
+        'neutrinet',  # requires login to Yuno repo on GitHub?
+    )
     versions = []
     last_app = None
     with git.clone_repo(f"https://github.com/YunoHost-Apps/{app}_ynh.git") as repo:
