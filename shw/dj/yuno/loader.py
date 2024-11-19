@@ -4,6 +4,7 @@ import logging
 from django.utils import timezone
 
 from shw import yuno
+from shw.dj.git import models as git_models
 from shw.dj.yuno import models
 
 
@@ -85,3 +86,17 @@ def backfill(app):
         )
 
         app_version.save()
+
+
+def create_git_apps():
+    app_names_with_repo = set(models.AppVersion.objects.filter(repo__isnull=False).values_list("name"))
+
+    for app in app_names_with_repo:
+        latest_app = models.AppVersion.objects.filter(name=app[0], repo__isnull=False).order_by("-updated")
+        if len(latest_app) == 0:
+            continue
+        repo = latest_app[0].repo
+        git_models.GitApp.objects.update_or_create(
+            name=app,
+            defaults={"remote_url": repo}
+        )
