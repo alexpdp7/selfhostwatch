@@ -38,6 +38,8 @@ def app_from_json(j):
     else:
         architectures = set(architectures)
 
+    _check_manifest(j["manifest"])
+
     return App(
         id=j["id"],
         architectures=architectures,
@@ -54,6 +56,9 @@ def app_from_json(j):
 
 def app_from_manifest(s):
     manifest = tomllib.loads(s)
+
+    _check_manifest(manifest)
+
     return App(
         id=manifest["id"],
         architectures=manifest["integration"]["architectures"],
@@ -66,6 +71,17 @@ def app_from_manifest(s):
         yuno_state=None,
         repo=manifest["upstream"].get("code"),
     )
+
+
+def _check_manifest(m):
+    if not "integration" in m:
+        raise InvalidManifest(f"missing integration in {m}")
+    if not "ldap" in m["integration"]:
+        raise InvalidManifest(f"missing integration.ldap in {m}")
+
+
+class InvalidManifest(Exception):
+    pass
 
 
 def parse(apps_json) -> abc.Iterator[App]:
@@ -84,8 +100,8 @@ def backfill(app):
                 if not last_app or last_app != app:
                     yield app, date
                     last_app = app
-            except tomllib.TOMLDecodeError as e:
-                logger.error("malformed manifest")
+            except (tomllib.TOMLDecodeError, InvalidManifest) as e:
+                logger.error("malformed manifest %s", e)
 
             logs = subprocess.run(["git", "log", "--format=%H", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
             if len(logs.stdout.strip().splitlines()) == 1:
