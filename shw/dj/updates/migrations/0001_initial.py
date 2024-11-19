@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("git", "0001_initial"),
-        ("yuno", "0002_alter_appversion_yuno_high_quality_and_more"),
+        ("yuno", "0004_alter_appversion_yuno_multi_instance"),
     ]
 
     operations = [
