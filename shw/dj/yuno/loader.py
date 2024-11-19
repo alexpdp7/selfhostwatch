@@ -10,9 +10,18 @@ from shw.dj.yuno import models
 logger = logging.getLogger(__name__)
 
 
-def load():
+def load(backfill_from_repos=False):
     apps = yuno.parse(yuno.load())
+    broken = {}
     for app in apps:
+        logger.info("Updating %s", app)
+        if backfill_from_repos:
+            try:
+                backfill(app.id)
+            except Exception as e:
+                broken[app.id] = e
+            continue
+
         previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
 
         if previous.exists():
@@ -56,6 +65,7 @@ def load():
         for architecture in app.architectures:
             architecture_instance, _created = models.Architecture.objects.get_or_create(name=architecture)
             app_version.architectures.add(architecture_instance)
+    assert not broken, f"Broken apps {broken}"
 
 
 def backfill(app):
