@@ -4,13 +4,14 @@ from django.db import migrations
 
 
 CREATE_SQL = """
+drop view if exists updates_update;
 create view updates_update as
 select 'upstream' as source, version, date, name, 'upstream-' || version || '-' || 'name' as id
 from   git_version
 join   git_gitapp on git_version.git_app_id = git_gitapp.id
 union
 select 'yunohost' as source, version, updated, name, 'yunohost-' || version || '-' || 'name' as id
-from   yuno_appversion
+from   yuno_appversion;
 """
 
 DROP_SQL = "drop view if exists updates_update"
