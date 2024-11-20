@@ -98,13 +98,17 @@ def backfill(app):
     last_app = None
     with git.clone_repo(f"https://github.com/YunoHost-Apps/{app}_ynh.git") as repo:
         while True:
-            manifest_text = (repo / "manifest.toml").read_text()
             try:
+                manifest_text = (repo / "manifest.toml").read_text()
                 app = app_from_manifest(manifest_text)
                 date = git.get_last_commit_date(repo)
                 if not last_app or last_app != app:
                     yield app, date
                     last_app = app
+            except FileNotFoundError:
+                # this just happens for scovie and my_webdav; we seem to be only discarding v1 history or very early history
+                logger.error("manifest not found")
+                return
             except (tomllib.TOMLDecodeError, InvalidManifest) as e:
                 logger.error("malformed manifest %s", e)
 
