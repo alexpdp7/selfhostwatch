@@ -74,8 +74,11 @@ def app_from_manifest(s):
 
 
 def _check_manifest(m):
-    if not "integration" in m:
-        raise InvalidManifest(f"missing integration in {m}")
+    required_keys = set(["id", "integration", "version", "upstream"])
+    missing_keys = required_keys - m.keys()
+    if missing_keys:
+        raise InvalidManifest(f"missing keys {missing_keys} in {m}")
+
     required_keys = set(["ldap", "multi_instance", "sso"])
     missing_keys = required_keys - m["integration"].keys()
     if missing_keys:
