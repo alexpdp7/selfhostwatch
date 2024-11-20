@@ -39,7 +39,7 @@ def clone_repo(remote_url, filter_blobs=True):
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
         filter_blobs = ["--filter=blob:none"] if filter_blobs else []
-        subprocess.run(["git", "clone", "--filter=blob:none", remote_url, tempdir], check=True)
+        subprocess.run(["git", "clone", "--filter=blob:none", remote_url, tempdir], check=True, env={"GIT_TERMINAL_PROMPT": "0"})
         yield tempdir
 
 
