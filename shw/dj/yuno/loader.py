@@ -92,7 +92,8 @@ def create_git_apps():
     app_names_with_repo = set(models.AppVersion.objects.filter(repo__isnull=False).values_list("name"))
 
     for app in app_names_with_repo:
-        latest_app = models.AppVersion.objects.filter(name=app[0], repo__isnull=False).order_by("-updated")
+        app = app[0]
+        latest_app = models.AppVersion.objects.filter(name=app, repo__isnull=False).order_by("-updated")
         if len(latest_app) == 0:
             continue
         repo = latest_app[0].repo
