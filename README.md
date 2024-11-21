@@ -1,3 +1,16 @@
+# selfhostwatch
+
+I believe people should self-host more (and people self-hosted more in the past).
+I have found many projects, such as [YunoHost](https://yunohost.org/), that I consider great for introducing people to self-hosting.
+
+However, I think finding a hosting project to trust with dilligent updates and long-term future is a huge obstacle.
+
+selfhostwatch scrapes self-hosting systems (currently, only YunoHost) and displays a timeline of upstream and downstream updates.
+
+You can view the current timelines at <https://alexpdp7.github.io/selfhostwatch/>.
+
+## Hacking
+
 Django `manage.py`:
 
 ```
