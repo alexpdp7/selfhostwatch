@@ -1,0 +1,13 @@
+<html>
+  <body>
+    <table>
+      {% for app in object_list %}
+      <tr>
+        <td>
+          <a href="app/{{ app.name }}.html">{{ app.name }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
