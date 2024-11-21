@@ -4,25 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('updates', '0001_initial'),
+        ("updates", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Update',
+            name="Update",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source', models.CharField(max_length=100)),
-                ('version', models.CharField(max_length=100)),
-                ('date', models.DateTimeField()),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("source", models.CharField(max_length=100)),
+                ("version", models.CharField(max_length=100)),
+                ("date", models.DateTimeField()),
+                ("name", models.CharField(max_length=100)),
             ],
             options={
-                'managed': False,
+                "managed": False,
             },
         ),
     ]

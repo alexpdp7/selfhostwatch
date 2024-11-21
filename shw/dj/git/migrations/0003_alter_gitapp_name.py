@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('git', '0002_alter_version_version'),
+        ("git", "0002_alter_version_version"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='gitapp',
-            name='name',
+            model_name="gitapp",
+            name="name",
             field=models.CharField(max_length=100),
         ),
     ]

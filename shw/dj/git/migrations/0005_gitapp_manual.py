@@ -4,16 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('git', '0004_alter_version_version'),
+        ("git", "0004_alter_version_version"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gitapp',
-            name='manual',
-            field=models.BooleanField(default=False, help_text='Do not update automatically'),
+            model_name="gitapp",
+            name="manual",
+            field=models.BooleanField(
+                default=False, help_text="Do not update automatically"
+            ),
             preserve_default=False,
         ),
     ]

@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yuno', '0001_initial'),
+        ("yuno", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='appversion',
-            name='yuno_high_quality',
+            model_name="appversion",
+            name="yuno_high_quality",
             field=models.BooleanField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='appversion',
-            name='yuno_maintained',
+            model_name="appversion",
+            name="yuno_maintained",
             field=models.BooleanField(blank=True, null=True),
         ),
     ]

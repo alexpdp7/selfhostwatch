@@ -21,7 +21,7 @@ class App:
     id: str
     architectures: set[str]
     version: str
-    yuno_ldap: str # true, false, not_relevant
+    yuno_ldap: str  # true, false, not_relevant
     yuno_multi_instance: bool
     yuno_sso: str  # true, false, not_relevant
     yuno_high_quality: bool
@@ -115,11 +115,23 @@ def backfill(app):
             except (tomllib.TOMLDecodeError, InvalidManifest) as e:
                 logger.error("malformed manifest %s", e)
 
-            logs = subprocess.run(["git", "log", "--format=%H", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
+            logs = subprocess.run(
+                ["git", "log", "--format=%H", "manifest.toml"],
+                check=True,
+                encoding="utf8",
+                stdout=subprocess.PIPE,
+                cwd=repo,
+            )
             if len(logs.stdout.strip().splitlines()) == 1:
                 return
 
-            log = subprocess.run(["git", "log", "--format=%H", "HEAD^", "manifest.toml"], check=True, encoding="utf8", stdout=subprocess.PIPE, cwd=repo)
+            log = subprocess.run(
+                ["git", "log", "--format=%H", "HEAD^", "manifest.toml"],
+                check=True,
+                encoding="utf8",
+                stdout=subprocess.PIPE,
+                cwd=repo,
+            )
             previous_commit = log.stdout.strip()
             if not previous_commit:
                 return

@@ -4,34 +4,68 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Architecture',
+            name="Architecture",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=10)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=10)),
             ],
         ),
         migrations.CreateModel(
-            name='AppVersion',
+            name="AppVersion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('version', models.CharField(max_length=100)),
-                ('yuno_ldap', models.CharField(choices=[('true', 'true'), ('false', 'false'), ('not_relevant', 'not_relevant')], max_length=20)),
-                ('yuno_multi_instance', models.BooleanField()),
-                ('yuno_sso', models.CharField(choices=[('true', 'true'), ('false', 'false'), ('not_relevant', 'not_relevant')], max_length=20)),
-                ('yuno_high_quality', models.BooleanField()),
-                ('yuno_maintained', models.BooleanField()),
-                ('yuno_state', models.CharField(max_length=100)),
-                ('updated', models.DateTimeField()),
-                ('architectures', models.ManyToManyField(to='yuno.architecture')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("version", models.CharField(max_length=100)),
+                (
+                    "yuno_ldap",
+                    models.CharField(
+                        choices=[
+                            ("true", "true"),
+                            ("false", "false"),
+                            ("not_relevant", "not_relevant"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("yuno_multi_instance", models.BooleanField()),
+                (
+                    "yuno_sso",
+                    models.CharField(
+                        choices=[
+                            ("true", "true"),
+                            ("false", "false"),
+                            ("not_relevant", "not_relevant"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("yuno_high_quality", models.BooleanField()),
+                ("yuno_maintained", models.BooleanField()),
+                ("yuno_state", models.CharField(max_length=100)),
+                ("updated", models.DateTimeField()),
+                ("architectures", models.ManyToManyField(to="yuno.architecture")),
             ],
         ),
     ]

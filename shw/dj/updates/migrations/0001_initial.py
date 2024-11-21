@@ -16,8 +16,8 @@ from   yuno_appversion;
 
 DROP_SQL = "drop view if exists updates_update"
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
         ("git", "0001_initial"),
         ("yuno", "0004_alter_appversion_yuno_multi_instance"),

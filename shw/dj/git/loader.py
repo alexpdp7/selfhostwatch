@@ -17,7 +17,5 @@ def load_app(git_app):
 
     for tag, date in tags_to_commits.items():
         models.Version.objects.update_or_create(
-            git_app=git_app,
-            version=tag,
-            defaults={"date": date}
+            git_app=git_app, version=tag, defaults={"date": date}
         )

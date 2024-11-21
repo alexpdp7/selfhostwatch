@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yuno', '0002_alter_appversion_yuno_high_quality_and_more'),
+        ("yuno", "0002_alter_appversion_yuno_high_quality_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='appversion',
-            name='repo',
+            model_name="appversion",
+            name="repo",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
     ]

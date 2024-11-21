@@ -30,7 +30,10 @@ def load(backfill_from_repos=False):
 
             previous_app = yuno.App(
                 id=previous.name,
-                architectures=set(a for a in previous.architectures.all().values_list("name", flat=True)),
+                architectures=set(
+                    a
+                    for a in previous.architectures.all().values_list("name", flat=True)
+                ),
                 version=previous.version,
                 yuno_ldap=previous.yuno_ldap,
                 yuno_multi_instance=previous.yuno_multi_instance,
@@ -64,7 +67,9 @@ def load(backfill_from_repos=False):
 
         architecture_instances = []
         for architecture in app.architectures:
-            architecture_instance, _created = models.Architecture.objects.get_or_create(name=architecture)
+            architecture_instance, _created = models.Architecture.objects.get_or_create(
+                name=architecture
+            )
             app_version.architectures.add(architecture_instance)
     assert not broken, f"Broken apps {broken}"
 
@@ -89,17 +94,20 @@ def backfill(app):
 
 
 def create_git_apps():
-    app_names_with_repo = set(models.AppVersion.objects.filter(repo__isnull=False).values_list("name"))
+    app_names_with_repo = set(
+        models.AppVersion.objects.filter(repo__isnull=False).values_list("name")
+    )
 
     for app in app_names_with_repo:
         app = app[0]
-        latest_app = models.AppVersion.objects.filter(name=app, repo__isnull=False).order_by("-updated")
+        latest_app = models.AppVersion.objects.filter(
+            name=app, repo__isnull=False
+        ).order_by("-updated")
         if len(latest_app) == 0:
             continue
         repo = latest_app[0].repo
         if len(git_models.GitApp.objects.filter(name=app, manual=True)) > 0:
             continue
         git_models.GitApp.objects.update_or_create(
-            name=app,
-            defaults={"remote_url": repo}
+            name=app, defaults={"remote_url": repo}
         )

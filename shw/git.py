@@ -7,12 +7,17 @@ import tempfile
 
 def get_tags_to_commits(remote_url):
     result = {}
-    git = subprocess.run(["git", "ls-remote", "--tags", "--refs", remote_url], check=True, stdout=subprocess.PIPE, encoding="utf8")
+    git = subprocess.run(
+        ["git", "ls-remote", "--tags", "--refs", remote_url],
+        check=True,
+        stdout=subprocess.PIPE,
+        encoding="utf8",
+    )
     lines = git.stdout.splitlines()
     for l in lines:
         commit, tag = l.split()
         assert tag.startswith("refs/tags/"), f"{tag} does not start with refs/tags/"
-        tag = tag[len("refs/tags/"):]
+        tag = tag[len("refs/tags/") :]
         result[tag] = commit
     return result
 
@@ -39,11 +44,21 @@ def clone_repo(remote_url, filter_blobs=True):
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
         filter_blobs = ["--filter=blob:none"] if filter_blobs else []
-        subprocess.run(["git", "clone", "--filter=blob:none", remote_url, tempdir], check=True, env={"GIT_TERMINAL_PROMPT": "0"})
+        subprocess.run(
+            ["git", "clone", "--filter=blob:none", remote_url, tempdir],
+            check=True,
+            env={"GIT_TERMINAL_PROMPT": "0"},
+        )
         yield tempdir
 
 
 def get_last_commit_date(clone, commit=None):
     commit = [commit] if commit else []
-    log = subprocess.run(["git", "log", "-1", "--format=format:%ci"] + commit, check=True, cwd=clone, stdout=subprocess.PIPE, encoding="utf8")
+    log = subprocess.run(
+        ["git", "log", "-1", "--format=format:%ci"] + commit,
+        check=True,
+        cwd=clone,
+        stdout=subprocess.PIPE,
+        encoding="utf8",
+    )
     return datetime.datetime.fromisoformat(log.stdout)
