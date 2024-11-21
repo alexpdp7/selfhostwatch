@@ -4,6 +4,7 @@ from django.db import models
 class GitApp(models.Model):
     name = models.CharField(max_length=100)
     remote_url = models.CharField(max_length=100)
+    manual = models.BooleanField(help_text="Do not update automatically", default=True)
 
     def __str__(self):
         return self.name

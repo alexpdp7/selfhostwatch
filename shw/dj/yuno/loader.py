@@ -97,6 +97,8 @@ def create_git_apps():
         if len(latest_app) == 0:
             continue
         repo = latest_app[0].repo
+        if len(git_models.GitApp.objects.filter(name=app, manual=True)) > 0:
+            continue
         git_models.GitApp.objects.update_or_create(
             name=app,
             defaults={"remote_url": repo}
