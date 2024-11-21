@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from django.utils import timezone
@@ -65,7 +64,6 @@ def load(backfill_from_repos=False):
 
         app_version.save()
 
-        architecture_instances = []
         for architecture in app.architectures:
             architecture_instance, _created = models.Architecture.objects.get_or_create(
                 name=architecture
