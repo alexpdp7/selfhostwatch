@@ -1,15 +1,17 @@
-<html>
-  <body>
-    <p>See <a href="https://github.com/alexpdp7/selfhostwatch">https://github.com/alexpdp7/selfhostwatch</a>.</p>
-    <p>Generated on {% now "c" %}</p>
-    <table>
-      {% for app in object_list %}
-      <tr>
-        <td>
-          <a href="app/{{ app.name }}.html">{{ app.name }}</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-  </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Tracked applications{% endblock %}
+
+{% block content %}
+
+<table>
+  {% for app in object_list %}
+  <tr>
+    <td>
+      <a href="app/{{ app.name }}.html">{{ app.name }}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
