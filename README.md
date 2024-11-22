@@ -37,3 +37,16 @@ kubectl create secret generic shw --from-file=SECRET_KEY=<(openssl rand 128 | ba
 kubectl apply -f k8s.yaml
 kubectl exec -it deployments/shw shw-runserver -- uv run --with git+https://github.com/alexpdp7/selfhostwatch.git[pg] django-admin createsuperuser --settings shw.dj.settings
 ```
+
+## How it works
+
+I run the k8s deployment in my own cluster.
+This deployment is *not* accessible outside the cluster yet.
+I can use `kubectl port-forward` to access the Django website.
+
+The public web site has URLs that translate well to file names.
+Instead of using URLs that end in `/`, URLs end in `x.html`.
+The `publish` cronjob uses `wget --mirror` to extract a static web site, and publishes by pushing to GitHub Pages.
+
+In this way, I can run the scraping processes in Kubernetes, with a database, etc. and just publish a static website.
+(But still, I can use Django `runserver` for interactive development.)
