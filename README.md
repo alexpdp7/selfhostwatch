@@ -33,7 +33,7 @@ kubectl create ns shw
 kubectl config set-context --current --namespace shw
 kubectl create configmap shw --from-literal=ALLOWED_HOSTS=localhost --from-literal=DJANGO_SETTINGS_MODULE=shw.dj.settings
 # see https://github.com/jazzband/dj-database-url
-kubectl create secret generic shw --from-file=SECRET_KEY=<(openssl rand 128 | base64 -w 0) --from-literal=DATABASE_URL=...
+kubectl create secret generic shw --from-file=SECRET_KEY=<(openssl rand 128 | base64 -w 0) --from-literal=DATABASE_URL=... --from-literal=EXPORT_GIT_URL=...
 kubectl apply -f k8s.yaml
 kubectl exec -it deployments/shw shw-runserver -- uv run --with git+https://github.com/alexpdp7/selfhostwatch.git[pg] django-admin createsuperuser --settings shw.dj.settings
 ```
