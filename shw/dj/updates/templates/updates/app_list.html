@@ -4,6 +4,13 @@
 
 {% block content %}
 
+<p>Recent updates:
+  {% for update in recent_updates %}
+    {{ update.name }} {{ update.version }} ({{ update.source }}) {{ update.date | timesince }} ago,
+  {% endfor %}
+  ...
+</p>
+
 <table>
   {% for app in object_list %}
   <tr>
