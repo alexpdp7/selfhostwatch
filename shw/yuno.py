@@ -84,7 +84,7 @@ def _check_manifest(m):
     if missing_keys:
         raise InvalidManifest(f"missing integration keys {missing_keys} in {m}")
 
-    if "https://github.com/search?" in m["upstream"].get("code"):
+    if "https://github.com/search?" in m["upstream"].get("code", ""):
         raise InvalidManifest(f"{m} has a bad upstream.code")
 
 
