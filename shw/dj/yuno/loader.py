@@ -55,8 +55,8 @@ def load_app(app):
             logger.info(f"skipping {app} because it is identical to {previous_app}")
             return
 
-    if previous.version == app.version:
-        previous.delete()
+        if previous.version == app.version:
+            previous.delete()
 
     app_version = models.AppVersion(
         name=app.id,
