@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 def load(backfill_from_repos=False):
     apps = yuno.parse(yuno.load())
     broken = {}
-    for app in apps:
-        logger.info("Updating %s", app)
+    total = len(apps)
+    for i, app in enumerate(apps):
+        logger.info("Updating %s (%d/%d)", app, i, total)
         if backfill_from_repos:
             try:
                 backfill(app.id)
