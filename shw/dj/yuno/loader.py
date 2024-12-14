@@ -55,23 +55,22 @@ def load_app(app):
             logger.info(f"skipping {app} because it is identical to {previous_app}")
             return
 
-        if previous.version == app.version:
-            previous.delete()
-
-    app_version = models.AppVersion(
+    (app_version, _created) = models.AppVersion.objects.update_or_create(
         name=app.id,
         version=app.version,
-        yuno_ldap=app.yuno_ldap,
-        yuno_multi_instance=app.yuno_multi_instance,
-        yuno_sso=app.yuno_sso,
-        yuno_high_quality=app.yuno_high_quality,
-        yuno_maintained=app.yuno_maintained,
-        yuno_state=app.yuno_state,
-        repo=app.repo,
-        updated=timezone.now(),
+        defaults = {
+            "yuno_ldap": app.yuno_ldap,
+            "yuno_multi_instance": app.yuno_multi_instance,
+            "yuno_sso": app.yuno_sso,
+            "yuno_high_quality": app.yuno_high_quality,
+            "yuno_maintained": app.yuno_maintained,
+            "yuno_state": app.yuno_state,
+            "repo": app.repo,
+        },
+        create_defaults= {
+            "updated": timezone.now(),
+        }
     )
-
-    app_version.save()
 
     for architecture in app.architectures:
         architecture_instance, _created = models.Architecture.objects.get_or_create(
