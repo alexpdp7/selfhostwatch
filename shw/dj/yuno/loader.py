@@ -29,6 +29,7 @@ def load(backfill_from_repos=False):
 
 def load_app(app):
     previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
+    app_version = None
 
     if previous.exists():
         previous = previous.first()
@@ -54,23 +55,18 @@ def load_app(app):
         if app == previous_app:
             logger.info(f"skipping {app} because it is identical to {previous_app}")
             return
+        app_version = previous
+    else:
+        app_version = models.AppVersion(name=app.id, version=app.version, updated=timezone.now())
 
-    (app_version, _created) = models.AppVersion.objects.update_or_create(
-        name=app.id,
-        version=app.version,
-        defaults = {
-            "yuno_ldap": app.yuno_ldap,
-            "yuno_multi_instance": app.yuno_multi_instance,
-            "yuno_sso": app.yuno_sso,
-            "yuno_high_quality": app.yuno_high_quality,
-            "yuno_maintained": app.yuno_maintained,
-            "yuno_state": app.yuno_state,
-            "repo": app.repo,
-        },
-        create_defaults= {
-            "updated": timezone.now(),
-        }
-    )
+    app_version.yuno_ldap = app.yuno_ldap
+    app_version.yuno_multi_instance = app.yuno_multi_instance
+    app_version.yuno_sso = app.yuno_sso
+    app_version.yuno_high_quality = app.yuno_high_quality
+    app_version.yuno_maintained = app.yuno_maintained
+    app_version.yuno_state = app.yuno_state
+    app_version.repo = app.repo
+    app_version.save()
 
     for architecture in app.architectures:
         architecture_instance, _created = models.Architecture.objects.get_or_create(
