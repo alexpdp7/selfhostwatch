@@ -23,54 +23,61 @@ def load(backfill_from_repos=False):
                 broken[app.id] = e
             continue
 
-        previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
+        load_app(app)
+    assert not broken, f"Broken apps {broken}"
 
-        if previous.exists():
-            previous = previous.first()
 
-            previous_app = yuno.App(
-                id=previous.name,
-                architectures=set(
-                    a
-                    for a in previous.architectures.all().values_list("name", flat=True)
-                ),
-                version=previous.version,
-                yuno_ldap=previous.yuno_ldap,
-                yuno_multi_instance=previous.yuno_multi_instance,
-                yuno_sso=previous.yuno_sso,
-                yuno_high_quality=previous.yuno_high_quality,
-                yuno_maintained=previous.yuno_maintained,
-                yuno_state=previous.yuno_state,
-                repo=previous.repo,
-            )
+def load_app(app):
+    previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
 
-            logger.debug(f"comparing app {app} to previous {previous_app}")
+    if previous.exists():
+        previous = previous.first()
 
-            if app == previous_app:
-                logger.info(f"skipping {app} because it is identical to {previous_app}")
-                continue
-
-        app_version = models.AppVersion(
-            name=app.id,
-            version=app.version,
-            yuno_ldap=app.yuno_ldap,
-            yuno_multi_instance=app.yuno_multi_instance,
-            yuno_sso=app.yuno_sso,
-            yuno_high_quality=app.yuno_high_quality,
-            yuno_maintained=app.yuno_maintained,
-            yuno_state=app.yuno_state,
-            repo=app.repo,
-            updated=timezone.now(),
+        previous_app = yuno.App(
+            id=previous.name,
+            architectures=set(
+                a
+                for a in previous.architectures.all().values_list("name", flat=True)
+            ),
+            version=previous.version,
+            yuno_ldap=previous.yuno_ldap,
+            yuno_multi_instance=previous.yuno_multi_instance,
+            yuno_sso=previous.yuno_sso,
+            yuno_high_quality=previous.yuno_high_quality,
+            yuno_maintained=previous.yuno_maintained,
+            yuno_state=previous.yuno_state,
+            repo=previous.repo,
         )
 
-        app_version.save()
+        logger.debug(f"comparing app {app} to previous {previous_app}")
 
-        for architecture in app.architectures:
-            architecture_instance, _created = models.Architecture.objects.get_or_create(
-                name=architecture
-            )
-            app_version.architectures.add(architecture_instance)
-    assert not broken, f"Broken apps {broken}"
+        if app == previous_app:
+            logger.info(f"skipping {app} because it is identical to {previous_app}")
+            return
+
+    if previous.version == app.version:
+        previous.delete()
+
+    app_version = models.AppVersion(
+        name=app.id,
+        version=app.version,
+        yuno_ldap=app.yuno_ldap,
+        yuno_multi_instance=app.yuno_multi_instance,
+        yuno_sso=app.yuno_sso,
+        yuno_high_quality=app.yuno_high_quality,
+        yuno_maintained=app.yuno_maintained,
+        yuno_state=app.yuno_state,
+        repo=app.repo,
+        updated=timezone.now(),
+    )
+
+    app_version.save()
+
+    for architecture in app.architectures:
+        architecture_instance, _created = models.Architecture.objects.get_or_create(
+            name=architecture
+        )
+        app_version.architectures.add(architecture_instance)
 
 
 def backfill(app):
