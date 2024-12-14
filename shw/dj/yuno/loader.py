@@ -43,10 +43,10 @@ def load(backfill_from_repos=False):
                 repo=previous.repo,
             )
 
-            logger.debug("comparing app {app} to previous {previous_app}")
+            logger.debug(f"comparing app {app} to previous {previous_app}")
 
             if app == previous_app:
-                logger.info("skipping {app} because it is identical to {previous_app}")
+                logger.info(f"skipping {app} because it is identical to {previous_app}")
                 continue
 
         app_version = models.AppVersion(
