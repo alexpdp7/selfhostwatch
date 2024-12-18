@@ -26,6 +26,12 @@ $EDITOR shw/dj/settings.py  # add to INSTALLED_APPS
 $EDITOR shw/dj/foo/apps.py  # change FooConfig.name to shw.dj.foo
 ```
 
+### Loading data from the public website
+
+```
+curl https://alexpdp7.github.io/selfhostwatch/dump.json | DEV=y uv run python -m shw.dj.manage loaddata --format json -
+```
+
 ## Kubernetes
 
 ```
