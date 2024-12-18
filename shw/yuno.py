@@ -24,9 +24,9 @@ class App:
     yuno_ldap: str  # true, false, not_relevant
     yuno_multi_instance: bool
     yuno_sso: str  # true, false, not_relevant
-    yuno_high_quality: bool
-    yuno_maintained: bool
-    yuno_state: str
+    yuno_high_quality: bool  # only available from JSON, not from Git manifest
+    yuno_maintained: bool  # only available from JSON, not from Git manifest
+    yuno_state: str  # only available from JSON, not from Git manifest
     repo: str
 
 
