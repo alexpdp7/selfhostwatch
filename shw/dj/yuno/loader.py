@@ -28,12 +28,15 @@ def load(backfill_from_repos=False):
 
 
 def load_app(app):
-    previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
     app_version = None
 
+    previous = models.AppVersion.objects.filter(name=app.id).order_by("-updated")
     if previous.exists():
         previous = previous.first()
+    else:
+        previous = None
 
+    if previous:
         previous_app = yuno.App(
             id=previous.name,
             architectures=set(
@@ -55,8 +58,13 @@ def load_app(app):
         if app == previous_app:
             logger.info(f"skipping {app} because it is identical to {previous_app}")
             return
+
+    if previous and previous.version == app.version:
+        # Some fields are not available in backfilled data.
+        # If we had some previous data from the same version, then we update it to add the fields that are not in the backfills, but in the JSON.
         app_version = previous
     else:
+        # In all other cases, we create a new app version
         app_version = models.AppVersion(name=app.id, version=app.version, updated=timezone.now())
 
     app_version.yuno_ldap = app.yuno_ldap
