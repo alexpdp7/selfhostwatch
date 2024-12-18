@@ -24,11 +24,23 @@ def export():
             cwd=tempdir,
         )
 
-        dumpdata.Command().handle("git", "yuno",
-                                  format="json",
-                                  output=mirrordir / "dump.json",
-                                  verbosity=0, exclude=[],
-                                  indent=None, database=None, traceback=None, use_natural_foreign_keys=None, use_natural_primary_keys=None, use_base_manager=None, primary_keys=None)
+        dumpdata.Command().handle(
+            # apps
+            "git",
+            "yuno",
+            format="json",
+            output=mirrordir / "dump.json",
+            # parameters must be there :(
+            verbosity=0,
+            exclude=[],
+            indent=None,
+            database=None,
+            traceback=None,
+            use_natural_foreign_keys=None,
+            use_natural_primary_keys=None,
+            use_base_manager=None,
+            primary_keys=None,
+        )
 
         subprocess.run(["git", "init"], check=True, cwd=mirrordir)
         subprocess.run(["git", "add", "."], check=True, cwd=mirrordir)

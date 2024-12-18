@@ -40,8 +40,7 @@ def load_app(app):
         previous_app = yuno.App(
             id=previous.name,
             architectures=set(
-                a
-                for a in previous.architectures.all().values_list("name", flat=True)
+                a for a in previous.architectures.all().values_list("name", flat=True)
             ),
             version=previous.version,
             yuno_ldap=previous.yuno_ldap,
@@ -65,7 +64,9 @@ def load_app(app):
         app_version = previous
     else:
         # In all other cases, we create a new app version
-        app_version = models.AppVersion(name=app.id, version=app.version, updated=timezone.now())
+        app_version = models.AppVersion(
+            name=app.id, version=app.version, updated=timezone.now()
+        )
 
     app_version.yuno_ldap = app.yuno_ldap
     app_version.yuno_multi_instance = app.yuno_multi_instance

@@ -137,5 +137,13 @@ def backfill(app):
             if not previous_commit:
                 return
             previous_commit = previous_commit.splitlines()[0]
-            checkout = subprocess.run(["git", "checkout", previous_commit], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            assert checkout.returncode == 0, {"stdout": checkout.stdout, "stderr": checkout.stderr}
+            checkout = subprocess.run(
+                ["git", "checkout", previous_commit],
+                cwd=repo,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            assert checkout.returncode == 0, {
+                "stdout": checkout.stdout,
+                "stderr": checkout.stderr,
+            }
