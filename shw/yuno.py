@@ -105,6 +105,7 @@ def backfill(app):
                 app = app_from_manifest(manifest_text)
                 date = git.get_last_commit_date(repo)
                 if not last_app or last_app != app:
+                    logger.debug("app %s, date %s", app, date)
                     yield app, date
                     last_app = app
             except FileNotFoundError:
@@ -131,8 +132,10 @@ def backfill(app):
                 stdout=subprocess.PIPE,
                 cwd=repo,
             )
+            logger.debug("commit %s", log.stdout.split()[0])
             previous_commit = log.stdout.strip()
             if not previous_commit:
                 return
             previous_commit = previous_commit.splitlines()[0]
-            subprocess.run(["git", "checkout", previous_commit], check=True, cwd=repo)
+            checkout = subprocess.run(["git", "checkout", previous_commit], cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            assert checkout.returncode == 0, {"stdout": checkout.stdout, "stderr": checkout.stderr}
