@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 def load(backfill_from_repos=False):
+    """
+    As of late 2024, a backfill takes about 65 minutes.
+    """
     apps = yuno.parse(yuno.load())
     broken = {}
     total = len(apps)
