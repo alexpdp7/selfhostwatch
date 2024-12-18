@@ -17,7 +17,7 @@ Django `manage.py`:
 DEV=y uv run python -m shw.dj.manage ...
 ```
 
-## Create a new app
+### Create a new app
 
 ```
 mkdir -p shw/dj/foo
