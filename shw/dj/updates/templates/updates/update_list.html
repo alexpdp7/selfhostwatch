@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Tracked applications{% endblock %}
+{% block title %}{{ app }}{% endblock %}
 
 {% block content %}
 
 <p><a href="../index.html">Index</a></p>
+
+<h1>{{ app }} updates timeline</h1>
 
 <table>
   {% for update in object_list %}

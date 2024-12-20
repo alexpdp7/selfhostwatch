@@ -16,5 +16,10 @@ class AppListView(ListView):
 
 
 class AppUpdatesListView(ListView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["app"] = self.kwargs["name"]
+        return context
+
     def get_queryset(self):
         return models.Update.objects.filter(name=self.kwargs["name"]).order_by("-date")
