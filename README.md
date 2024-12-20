@@ -4,9 +4,9 @@ For details about developing selfhostwatch, see [HACKING](HACKING.md).
 
 Self-hosting is a valuable tool to keep the Internet useful to the people, and not to private for-profit companies.
 
-Many good software is available to self-host.
+Much good software is available to self-host.
 However, self-hosting this software often requires Linux administration tasks.
-(For example, installing the software, creating a database, and configuing backups.)
+(For example, installing the software, creating a database, and automating backups.)
 
 Projects such as [YunoHost](https://yunohost.org/) automate the deployment of self-hosted software.
 These projects provide a step-by-step installation process for a base system, and then offer a web interface to install completely functional instances of packages.
