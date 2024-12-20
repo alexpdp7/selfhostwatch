@@ -1,58 +1,23 @@
 # selfhostwatch
 
-I believe people should self-host more (and people self-hosted more in the past).
-I have found many projects, such as [YunoHost](https://yunohost.org/), that I consider great for introducing people to self-hosting.
+For details about developing selfhostwatch, see [HACKING](HACKING.md).
 
-However, I think finding a hosting project to trust with dilligent updates and long-term future is a huge obstacle.
+Self-hosting is a valuable tool to keep the Internet useful to the people, and not to private for-profit companies.
+
+Many good software is available to self-host.
+However, self-hosting this software often requires Linux administration tasks.
+(For example, installing the software, creating a database, and configuing backups.)
+
+Projects such as [YunoHost](https://yunohost.org/) automate the deployment of self-hosted software.
+These projects provide a step-by-step installation process for a base system, and then offer a web interface to install completely functional instances of packages.
+
+(Although Linux distributions often package the same software, generally administrators must do significant configuration.)
+
+When self-hosting software, especially if exposing such software to the Internet, keeping the software up to date is essential to prevent malicious actors from disrupting your self-hosted systems.
+
+(Remember that automated malicious actors scan the Internet for outdated exploitable software.)
 
 selfhostwatch scrapes self-hosting systems (currently, only YunoHost) and displays a timeline of upstream and downstream updates.
+With these timelines, people who want to self-host software can evaluate whether a self-hosting system provides good-enough updates.
 
 You can view the current timelines at <https://alexpdp7.github.io/selfhostwatch/>.
-
-## Hacking
-
-Django `manage.py`:
-
-```
-DEV=y uv run python -m shw.dj.manage ...
-```
-
-### Creating a new app
-
-```
-mkdir -p shw/dj/foo
-uv run python -m shw.dj.manage startapp foo shw/dj/foo
-$EDITOR shw/dj/settings.py  # add to INSTALLED_APPS
-$EDITOR shw/dj/foo/apps.py  # change FooConfig.name to shw.dj.foo
-```
-
-### Loading data from the public website
-
-```
-curl https://alexpdp7.github.io/selfhostwatch/dump.json | DEV=y uv run python -m shw.dj.manage loaddata --format json -
-```
-
-## Kubernetes
-
-```
-kubectl create ns shw
-kubectl config set-context --current --namespace shw
-kubectl create configmap shw --from-literal=ALLOWED_HOSTS=localhost --from-literal=DJANGO_SETTINGS_MODULE=shw.dj.settings
-# see https://github.com/jazzband/dj-database-url
-kubectl create secret generic shw --from-file=SECRET_KEY=<(openssl rand 128 | base64 -w 0) --from-literal=DATABASE_URL=... --from-literal=EXPORT_GIT_URL=...
-kubectl apply -f k8s.yaml
-kubectl exec -it deployments/shw shw-runserver -- uv run --with git+https://github.com/alexpdp7/selfhostwatch.git[pg] django-admin createsuperuser
-```
-
-## How it works
-
-I run the k8s deployment in my own cluster.
-This deployment is *not* accessible outside the cluster yet.
-I can use `kubectl port-forward` to access the Django website.
-
-The public web site has URLs that translate well to file names.
-Instead of using URLs that end in `/`, URLs end in `x.html`.
-The `publish` cronjob uses `wget --mirror` to extract a static web site, and publishes by pushing to GitHub Pages.
-
-In this way, I can run the scraping processes in Kubernetes, with a database, etc. and just publish a static website.
-(But still, I can use Django `runserver` for interactive development.)
