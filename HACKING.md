@@ -3,7 +3,7 @@
 selfhostwatch collects data from services such as YunoHost and presents them as a website.
 
 Currently, selfhostwatch is a Django application.
-The data collection processes store data in a relational database by using the Djang ORM.
+The data collection processes store data in a relational database by using the Django ORM.
 The website that presents the data is implemented by using Django views and templates.
 
 Django helps implement a basic administrator interface that administrators can use to manipulate selfhostwatch data.
@@ -53,9 +53,9 @@ This delegates the maintenance burden of keeping the website available to GitHub
 
 The data collection and static website publishing services run in a private Kubernetes cluster.
 
-The public web site has URLs that translate well to file names.
+The public website has URLs that translate well to file names.
 Instead of using URLs that end in `/`, URLs end in `x.html`.
-The `publish` Kubernetes cronjob uses `wget --mirror` to extract a static web site, and publishes by pushing to GitHub Pages.
+The `publish` Kubernetes cronjob uses `wget --mirror` to extract a static website, and publishes by pushing to GitHub Pages.
 
 ### The Kubernetes deployment
 
