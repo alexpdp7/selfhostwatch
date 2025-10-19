@@ -56,6 +56,7 @@ kind: CronJob
 metadata:
   name: yunohost
 spec:
+  concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
       name: yunohost
@@ -88,6 +89,7 @@ kind: CronJob
 metadata:
   name: gitapp
 spec:
+  concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
       name: gitapp
@@ -120,6 +122,7 @@ kind: CronJob
 metadata:
   name: publish
 spec:
+  concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
       name: publish
