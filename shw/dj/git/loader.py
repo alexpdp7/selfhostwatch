@@ -4,8 +4,10 @@ from shw.dj.git import models
 
 def load():
     broken = {}
-    for git_app in models.GitApp.objects.all():
+    git_apps = models.GitApp.objects.all()
+    for i, git_app in enumerate(git_apps):
         try:
+            print(i, len(git_apps), git_app)
             load_app(git_app)
         except Exception as e:
             broken[git_app.name] = e
